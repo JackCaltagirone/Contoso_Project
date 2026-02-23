@@ -1,13 +1,15 @@
 -- =====================================================================
 -- Purpose:
--- Analyze product-level profitability to identify potential revenue
--- leakage. Revenue, cost, and profit are calculated per order line to
--- detect low‑margin or negative‑margin transactions.
+-- Establish a baseline understanding of product-level financials.
+-- We calculate revenue, cost, and profit at the order-line level so we
+-- can validate data quality and confirm whether any transactions are
+-- loss-making before moving into deeper analysis.
 -- =====================================================================
+
 
 -- Step 1:
 -- Compute revenue, cost, and profit for each order line.
--- Used to check for zero or negative profit (none found in this dataset).
+-- This is used to check for negative or zero-profit transactions.
 WITH order_profit AS (
     SELECT
         orderkey,
@@ -29,8 +31,10 @@ FROM order_profit
 WHERE profit <= 0
 LIMIT 10;
 
--- No rows returned → all transactions show positive profit.
--- Next: find the min/max profit range for context.
+-- No negative-profit rows found.
+-- Next step: check the profit range to understand overall spread.
+
+
 WITH order_profit AS (
     SELECT
         ROUND((netprice::numeric * quantity), 2) AS revenue,
@@ -44,10 +48,10 @@ SELECT
 FROM order_profit;
 
 -- Step 2:
--- Categorize each order line into margin bands: 
+-- Since all rows are profitable, we classify each order line into
+-- margin bands. This helps us understand the distribution of margins
+-- across the dataset and verify whether any segments behave unusually.
 
--- note: after serveral queries all of the profit values are between 25-75, so we can use that as a basis for our margin bands.
---but first i want to get a count of the items in the margins to better understand how to proceed with messuring the data.
 
 WITH order_profit AS (
     SELECT
@@ -88,20 +92,14 @@ FROM margin_bands
 GROUP BY margin_band
 ORDER BY margin_band;
 
---here is where i had to pivot the orginal task. I was working towards finding where procuts were loosing money on sales. 
---even including shipping and handling costs, all of the products in this dataset are showing a profit.
-
--- Pivot:
--- Since all products fall within healthy margin bands and no loss-making items were found,
--- we're shifting the analysis from individual product margins to category-level profitability.
--- First step: join product → subcategory → category to evaluate which categories generate
--- the most revenue, profit, and strongest average margins.
+-- All items fall into healthy margin ranges.
+-- Since there are no low-margin or loss-making products, we pivot the
+-- analysis toward understanding performance at the category level.
 
 
--- Step 1 of the pivot:
--- Aggregate profitability at the product category level to identify which categories
--- generate the most revenue, profit, and strongest average margins.
-
+-- Pivot Step 1:
+-- Aggregate revenue, cost, and profit by category.
+-- This identifies which categories contribute most to overall financials.
 WITH order_profit AS (
     SELECT
         orderkey,
@@ -135,7 +133,7 @@ margin_bands AS (
 )
 
 SELECT
-    pc.categoryname,
+    p.categoryname,
     COUNT(*) AS total_items,
     SUM(mb.revenue) AS total_revenue,
     SUM(mb.cost) AS total_cost,
@@ -144,9 +142,36 @@ SELECT
 FROM margin_bands mb
 JOIN product p
     ON mb.productkey = p.productkey
-JOIN productsubcategory ps
-    ON p.productsubcategorykey = ps.productsubcategorykey
-JOIN productcategory pc
-    ON ps.productcategorykey = pc.productcategorykey
-GROUP BY pc.categoryname
+GROUP BY p.categoryname
 ORDER BY total_profit DESC;
+
+-- This gives us category-level profitability metrics for comparison.
+
+
+-- Pivot Step 2:
+-- Pull revenue-only metrics at the category level.
+-- Used for visual comparison (e.g., revenue vs profit bar charts).
+WITH order_revenue AS (
+    SELECT
+        orderkey,
+        productkey,
+        quantity,
+        ROUND((netprice::numeric * quantity), 2) AS revenue
+    FROM sales
+)
+
+SELECT
+    p.categoryname,
+    COUNT(*) AS total_items,
+    SUM(orv.revenue) AS total_revenue,
+    AVG(orv.revenue) AS avg_revenue_per_item
+FROM order_revenue orv
+JOIN product p
+    ON orv.productkey = p.productkey
+GROUP BY p.categoryname
+ORDER BY total_revenue DESC;
+
+-- Category results show Computers as the top performer by a wide margin.
+-- Next steps:
+--   • Break Computers into subcategories to identify internal drivers.
+--   • Analyze revenue and profit by country to determine geographic impact.
