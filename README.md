@@ -1,8 +1,3 @@
-Here’s a clean, professional, emoji‑free README with your email and LinkedIn added at the bottom.  
-This version is fully GitHub‑friendly and easy to copy.
-
----
-
 # Contoso Revenue Optimization & Cost‑Saving Analysis  
 *A Data Analytics Portfolio Project by Jack Caltagirone*
 
@@ -87,13 +82,19 @@ It shows the ability to think like an analyst — not just produce charts, but u
 Email: jackcaltagirone1996@gmail.com  
 LinkedIn: https://www.linkedin.com/in/jack-caltagirone96/
 
----
+## GitHub Tagline
+SQL‑driven analysis of the Contoso dataset to uncover revenue leakage, improve retention, and identify cost‑saving opportunities.
 
-If you want, I can also help you write:
-
-- a short GitHub tagline  
-- repo tags  
-- a LinkedIn announcement post  
-- a “Future Improvements” section  
-
-Just tell me what you want to add next.
+## Repo Tags
+```
+data-analysis
+sql
+postgresql
+contoso
+business-intelligence
+analytics-project
+cohort-analysis
+revenue-analysis
+retail-analytics
+portfolio-project
+```
