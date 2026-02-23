@@ -2,88 +2,68 @@
 *A Data Analytics Portfolio Project by Jack Caltagirone*
 
 ## Overview
-This project explores the Contoso retail dataset with one clear goal:
+This project analyzes the Contoso retail dataset to identify where the business may be losing money and how profitability can be improved. Using SQL and a structured analytical approach, the project focuses on operational inefficiencies, product performance, customer behaviour, and regional trends — all grounded in the actual schema of the dataset.
 
-**Identify where the company is losing money — and uncover opportunities to save revenue, reduce waste, and improve profitability.**
-
-Using SQL and analytical reasoning, I investigate real business problems such as customer retention, product performance, discount effectiveness, and operational inefficiencies. The project is designed to reflect the type of work done by data analysts in real companies.
+The goal is to demonstrate practical data‑analysis skills that mirror real business scenarios: understanding costs, evaluating revenue drivers, and uncovering opportunities to reduce waste and improve margins.
 
 ## Project Goals
-- Detect revenue leakage across discounts, returns, and operations  
-- Understand customer behaviour over time using cohort analysis  
-- Identify underperforming or low‑margin products  
-- Evaluate regional and shipping inefficiencies  
-- Provide data‑driven recommendations that improve profitability  
+Based on the available tables and columns, this project focuses on:
 
-## Key Analyses
+### 1. Shipping & Operational Inefficiencies  
+Using `unitprice`, `unitcost`, `netprice`, and `shippingcost` (if applicable), we identify:
+- Orders with low or negative profit  
+- High‑cost regions or stores  
+- Products that are expensive to ship relative to their margin  
 
-### 1. Revenue Leakage Analysis
-Investigates:
-- Excessive or ineffective discounting  
-- High return rates  
-- Orders where shipping cost exceeds profit  
-- Customers who only buy when discounted  
+### 2. Product Profitability & Performance  
+Using the `product` and `sales` tables, we analyze:
+- High‑margin vs low‑margin products  
+- Products with declining sales  
+- Categories and subcategories that underperform  
+- Cost vs price mismatches  
 
-Business value: Helps recover lost revenue and improve pricing strategy.
+### 3. Customer Behaviour & Value  
+Using the `customer` table, we explore:
+- Customer demographics and purchasing patterns  
+- High‑value vs low‑value customers  
+- Geographic or demographic segments with low profitability  
 
-### 2. Customer Cohort Retention & Lifetime Value
-Analyzes:
-- When customers first purchased (cohort year)  
-- How long they remain active  
-- Revenue generated over time  
-- Cohorts with strong or weak retention  
+### 4. Regional & Store‑Level Insights  
+Using `store`, `customer`, and `sales`, we evaluate:
+- Revenue and profit by region  
+- Underperforming stores  
+- Geographic areas with high operational cost  
 
-Business value: Supports retention strategy and long‑term forecasting.
+### 5. Currency & Exchange Rate Impact  
+Using `currencyexchange` and `sales.exchangerate`, we analyze:
+- How exchange rates affect revenue  
+- Which currencies or regions introduce volatility  
+- Profitability after currency conversion  
 
-### 3. Underperforming Product Analysis
-Identifies products with:
-- Low sales velocity  
-- Declining year‑over‑year performance  
-- Low margin contribution  
+## Why This Project Matters
+This project demonstrates the core capabilities expected from a data analyst:
 
-Business value: Helps reduce dead stock and optimize inventory.
+- Understanding business problems, not just writing SQL  
+- Working with real‑world retail data structures  
+- Identifying operational inefficiencies and cost drivers  
+- Turning raw data into actionable insights  
+- Communicating findings clearly and professionally  
 
-### 4. Regional & Shipping Inefficiencies
-Evaluates:
-- Revenue by region  
-- Shipping cost per order  
-- Regions with high return rates  
-- Unprofitable customer segments  
-
-Business value: Improves logistics decisions and reduces operational waste.
-
-### 5. Price Sensitivity & Optimization
-Explores:
-- Revenue vs price changes  
-- Categories sensitive to price  
-- Products priced too low or too high  
-
-Business value: Supports margin improvement and pricing strategy.
+The analyses reflect realistic scenarios faced by analytics teams in retail, logistics, and finance.
 
 ## Tools & Techniques
 - SQL (PostgreSQL)  
-- Window functions  
-- Cohort analysis  
-- Revenue modeling  
-- Segmentation  
-- Data visualization  
-
-## Why This Project Matters
-This project demonstrates the core skills expected from a data analyst:
-
-- Turning raw data into meaningful insights  
-- Understanding business problems, not just writing queries  
-- Identifying opportunities to save money  
-- Communicating findings clearly and professionally  
-
-It shows the ability to think like an analyst — not just produce charts, but uncover insights that drive real business decisions.
+- Joins, aggregations, window functions  
+- Profit and margin calculations  
+- Geographic and demographic segmentation  
+- Time‑based analysis using the `date` table  
 
 ## Contact
 Email: jackcaltagirone1996@gmail.com  
 LinkedIn: https://www.linkedin.com/in/jack-caltagirone96/
 
 ## GitHub Tagline
-SQL‑driven analysis of the Contoso dataset to uncover revenue leakage, improve retention, and identify cost‑saving opportunities.
+SQL‑driven analysis of the Contoso dataset to uncover operational inefficiencies, improve profitability, and identify cost‑saving opportunities.
 
 ## Repo Tags
 ```
@@ -93,8 +73,7 @@ postgresql
 contoso
 business-intelligence
 analytics-project
-cohort-analysis
-revenue-analysis
+profitability-analysis
 retail-analytics
 portfolio-project
 ```
