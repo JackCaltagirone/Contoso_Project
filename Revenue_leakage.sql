@@ -175,3 +175,80 @@ ORDER BY total_revenue DESC;
 -- Next steps:
 --   • Break Computers into subcategories to identify internal drivers.
 --   • Analyze revenue and profit by country to determine geographic impact.
+
+
+
+-- Break the Computers category into its subcategories.
+-- This identifies which product groups inside Computers contribute the most
+-- to revenue and profit. We reuse the same order-level profitability logic
+-- to keep calculations consistent with the category-level analysis.
+
+WITH order_profit AS (
+    SELECT
+        s.orderkey,
+        s.productkey,
+        s.quantity,
+        ROUND((s.netprice::numeric * s.quantity), 2) AS revenue,
+        ROUND((s.unitcost::numeric * s.quantity), 2) AS cost,
+        ROUND(((s.netprice::numeric * s.quantity) - (s.unitcost::numeric * s.quantity)), 2) AS profit
+    FROM sales s
+),
+
+-- Join product → subcategory → category so we can isolate Computers
+product_hierarchy AS (
+    SELECT
+        p.productkey,
+        p.subcategoryname,
+        p.categoryname
+    FROM product p
+    WHERE p.categoryname = 'Computers'
+)
+
+-- Aggregate revenue, cost, and profit at the subcategory level
+SELECT
+    ph.subcategoryname,
+    COUNT(*) AS total_items,
+    SUM(op.revenue) AS total_revenue,
+    SUM(op.cost) AS total_cost,
+    SUM(op.profit) AS total_profit,
+    AVG(op.profit / op.revenue) AS avg_margin
+FROM order_profit op
+JOIN product_hierarchy ph
+    ON op.productkey = ph.productkey
+GROUP BY ph.subcategoryname
+ORDER BY total_profit DESC;
+
+-- revenue below
+
+-- Get revenue-only metrics for each subcategory within the Computers category.
+-- This mirrors the earlier profitability logic but isolates revenue so we can
+-- compare revenue vs profit side-by-side in visualizations.
+
+WITH order_revenue AS (
+    SELECT
+        s.orderkey,
+        s.productkey,
+        s.quantity,
+        ROUND((s.netprice::numeric * s.quantity), 2) AS revenue
+    FROM sales s
+),
+
+product_hierarchy AS (
+    SELECT
+        p.productkey,
+        p.subcategoryname,
+        p.categoryname
+    FROM product p
+    WHERE p.categoryname = 'Computers'
+)
+
+SELECT
+    ph.subcategoryname,
+    COUNT(*) AS total_items,
+    SUM(orv.revenue) AS total_revenue,
+    AVG(orv.revenue) AS avg_revenue_per_item
+FROM order_revenue orv
+JOIN product_hierarchy ph
+    ON orv.productkey = ph.productkey
+GROUP BY ph.subcategoryname
+ORDER BY total_revenue DESC;
