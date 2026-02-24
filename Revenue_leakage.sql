@@ -1,15 +1,13 @@
 -- =====================================================================
 -- Purpose:
--- Establish a baseline understanding of product-level financials.
--- We calculate revenue, cost, and profit at the order-line level so we
--- can validate data quality and confirm whether any transactions are
--- loss-making before moving into deeper analysis.
+-- Build a financial baseline by calculating revenue, cost, and profit
+-- at the order-line level. This validates data quality before deeper
+-- category, subcategory, and country analysis.
 -- =====================================================================
 
 
--- Step 1:
--- Compute revenue, cost, and profit for each order line.
--- This is used to check for negative or zero-profit transactions.
+-- Step 1: Check for negative or zero-profit transactions.
+-- CTE: Calculates revenue, cost, and profit per order line.
 WITH order_profit AS (
     SELECT
         orderkey,
@@ -31,10 +29,9 @@ FROM order_profit
 WHERE profit <= 0
 LIMIT 10;
 
--- No negative-profit rows found.
--- Next step: check the profit range to understand overall spread.
 
-
+-- Step 1b: Check overall profit range.
+-- CTE: Recomputes profit to inspect min/max values.
 WITH order_profit AS (
     SELECT
         ROUND((netprice::numeric * quantity), 2) AS revenue,
@@ -42,17 +39,15 @@ WITH order_profit AS (
         ROUND(((netprice::numeric * quantity) - (unitcost::numeric * quantity)), 2) AS profit
     FROM sales
 )
-SELECT 
+SELECT
     MIN(profit) AS min_profit,
     MAX(profit) AS max_profit
 FROM order_profit;
 
--- Step 2:
--- Since all rows are profitable, we classify each order line into
--- margin bands. This helps us understand the distribution of margins
--- across the dataset and verify whether any segments behave unusually.
 
-
+-- Step 2: Classify each order into margin bands.
+-- CTE 1: Compute revenue, cost, profit.
+-- CTE 2: Assign each row to a margin band.
 WITH order_profit AS (
     SELECT
         orderkey,
@@ -92,14 +87,10 @@ FROM margin_bands
 GROUP BY margin_band
 ORDER BY margin_band;
 
--- All items fall into healthy margin ranges.
--- Since there are no low-margin or loss-making products, we pivot the
--- analysis toward understanding performance at the category level.
 
-
--- Pivot Step 1:
--- Aggregate revenue, cost, and profit by category.
--- This identifies which categories contribute most to overall financials.
+-- Step 3: Category-level profitability.
+-- CTE 1: Compute revenue, cost, profit.
+-- CTE 2: Add margin bands for consistency.
 WITH order_profit AS (
     SELECT
         orderkey,
@@ -145,12 +136,9 @@ JOIN product p
 GROUP BY p.categoryname
 ORDER BY total_profit DESC;
 
--- This gives us category-level profitability metrics for comparison.
 
-
--- Pivot Step 2:
--- Pull revenue-only metrics at the category level.
--- Used for visual comparison (e.g., revenue vs profit bar charts).
+-- Step 4: Revenue-only category view.
+-- CTE: Compute revenue per order line.
 WITH order_revenue AS (
     SELECT
         orderkey,
@@ -171,18 +159,10 @@ JOIN product p
 GROUP BY p.categoryname
 ORDER BY total_revenue DESC;
 
--- Category results show Computers as the top performer by a wide margin.
--- Next steps:
---   • Break Computers into subcategories to identify internal drivers.
---   • Analyze revenue and profit by country to determine geographic impact.
 
-
-
--- Break the Computers category into its subcategories.
--- This identifies which product groups inside Computers contribute the most
--- to revenue and profit. We reuse the same order-level profitability logic
--- to keep calculations consistent with the category-level analysis.
-
+-- Step 5: Subcategory-level profitability (Computers only).
+-- CTE 1: Compute revenue, cost, profit.
+-- CTE 2: Filter product hierarchy to Computers.
 WITH order_profit AS (
     SELECT
         s.orderkey,
@@ -194,7 +174,6 @@ WITH order_profit AS (
     FROM sales s
 ),
 
--- Join product → subcategory → category so we can isolate Computers
 product_hierarchy AS (
     SELECT
         p.productkey,
@@ -204,7 +183,6 @@ product_hierarchy AS (
     WHERE p.categoryname = 'Computers'
 )
 
--- Aggregate revenue, cost, and profit at the subcategory level
 SELECT
     ph.subcategoryname,
     COUNT(*) AS total_items,
@@ -218,12 +196,9 @@ JOIN product_hierarchy ph
 GROUP BY ph.subcategoryname
 ORDER BY total_profit DESC;
 
--- revenue below
 
--- Get revenue-only metrics for each subcategory within the Computers category.
--- This mirrors the earlier profitability logic but isolates revenue so we can
--- compare revenue vs profit side-by-side in visualizations.
-
+-- Step 6: Revenue-only subcategory view.
+-- CTE: Compute revenue per order line.
 WITH order_revenue AS (
     SELECT
         s.orderkey,
@@ -252,3 +227,52 @@ JOIN product_hierarchy ph
     ON orv.productkey = ph.productkey
 GROUP BY ph.subcategoryname
 ORDER BY total_revenue DESC;
+
+
+-- Step 7: Desktop performance by country.
+-- CTE 1: Compute revenue, cost, profit.
+-- CTE 2: Filter to Desktop products.
+-- CTE 3: Bring in customer country.
+WITH order_profit AS (
+    SELECT
+        s.orderkey,
+        s.productkey,
+        s.quantity,
+        s.customerkey,
+        ROUND((s.netprice::numeric * s.quantity), 2) AS revenue,
+        ROUND((s.unitcost::numeric * s.quantity), 2) AS cost,
+        ROUND(((s.netprice::numeric * s.quantity) - (s.unitcost::numeric * s.quantity)), 2) AS profit
+    FROM sales s
+),
+
+product_hierarchy AS (
+    SELECT
+        p.productkey,
+        p.subcategoryname,
+        p.categoryname
+    FROM product p
+    WHERE p.categoryname = 'Computers'
+      AND p.subcategoryname = 'Desktops'
+),
+
+customer_dim AS (
+    SELECT
+        c.customerkey,
+        c.countryfull
+    FROM customer c
+)
+
+SELECT
+    cd.countryfull AS country,
+    COUNT(*) AS total_items,
+    SUM(op.revenue) AS total_revenue,
+    SUM(op.cost) AS total_cost,
+    SUM(op.profit) AS total_profit,
+    AVG(op.profit / op.revenue) AS avg_margin
+FROM order_profit op
+JOIN product_hierarchy ph
+    ON op.productkey = ph.productkey
+JOIN customer_dim cd
+    ON op.customerkey = cd.customerkey
+GROUP BY cd.countryfull
+ORDER BY total_profit DESC;
