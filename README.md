@@ -1,7 +1,3 @@
-Here’s a clean, streamlined version of your README that removes all future tasks and includes only the work you’ve already completed — without using the word *completed*. It keeps the tone professional and sets you up to add each new task as the project grows.
-
----
-
 # **Contoso Revenue Optimization & Profitability Analysis**  
 *A Data Analytics Portfolio Project by Jack Caltagirone*
 
