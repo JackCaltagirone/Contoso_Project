@@ -8,8 +8,12 @@ The goal is to demonstrate practical, job‑ready data analytics skills — not 
 
 ---
 
-Financial Baseline & Profitability Analysis
+## ** Financial Baseline & Profitability Analysis**
 Validated order‑line financials by calculating revenue, cost, and profit, then classified transactions into margin bands to reveal profitability distribution. Expanded the analysis across product categories, subcategories, and countries to identify top‑performing segments and uncover structural patterns in margin behavior.
+
+## **Cohort Behavior & State‑Level Customer Insights**
+Built a full cohort framework to analyze customer purchasing behavior across states, segmenting users into acquisition‑year buckets and evaluating their long‑term value. Measured revenue, profit, and item volume per cohort, revealing a consistent pattern where older cohorts spend more and purchase more across all major U.S. states. Expanded the analysis to identify top categories and top products within each cohort, confirming structural demand patterns and highlighting Computers & Accessories as the dominant category across regions and generations.
+
 
 
 ---
