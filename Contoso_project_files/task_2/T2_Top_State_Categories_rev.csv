@@ -7,22 +7,6 @@
 "California","Music, Movies and Audio Books","5661",182672.88667000004
 "California","Audio","2673",96986.26400300012
 "California","Games and Toys","3675",29020.75405600003
-"Florida","Computers","3897",750241.3513500011
-"Florida","Cell phones","3379",267281.08767999953
-"Florida","Home Appliances","1405",228291.63045399965
-"Florida","TV and Video","1064",168598.90719000006
-"Florida","Cameras and camcorders ","1187",161820.37736999991
-"Florida","Music, Movies and Audio Books","2687",88816.76013000017
-"Florida","Audio","1434",48744.07325500001
-"Florida","Games and Toys","1681",15577.808947999987
-"New York","Computers","4446",875899.1479499993
-"New York","Cell phones","4108",332529.22678000014
-"New York","Home Appliances","1529",251544.08360299986
-"New York","TV and Video","1290",188302.84483500003
-"New York","Cameras and camcorders ","1210",161504.87498999998
-"New York","Music, Movies and Audio Books","3269",100898.38524000028
-"New York","Audio","1458",49517.20629400001
-"New York","Games and Toys","2011",16809.904509999957
 "Texas","Computers","5661",1120443.8183500012
 "Texas","Cell phones","5314",430913.46085999894
 "Texas","Home Appliances","2010",316667.58215599996
@@ -31,3 +15,19 @@
 "Texas","Music, Movies and Audio Books","4062",138092.6705900001
 "Texas","Audio","1811",64974.18906500007
 "Texas","Games and Toys","2478",20545.20450400001
+"New York","Computers","4446",875899.1479499993
+"New York","Cell phones","4108",332529.22678000014
+"New York","Home Appliances","1529",251544.08360299986
+"New York","TV and Video","1290",188302.84483500003
+"New York","Cameras and camcorders ","1210",161504.87498999998
+"New York","Music, Movies and Audio Books","3269",100898.38524000028
+"New York","Audio","1458",49517.20629400001
+"New York","Games and Toys","2011",16809.904509999957
+"Florida","Computers","3897",750241.3513500011
+"Florida","Cell phones","3379",267281.08767999953
+"Florida","Home Appliances","1405",228291.63045399965
+"Florida","TV and Video","1064",168598.90719000006
+"Florida","Cameras and camcorders ","1187",161820.37736999991
+"Florida","Music, Movies and Audio Books","2687",88816.76013000017
+"Florida","Audio","1434",48744.07325500001
+"Florida","Games and Toys","1681",15577.808947999987
